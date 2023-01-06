@@ -2,15 +2,12 @@ package cmd
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
-
-	"github.com/PullRequestInc/go-gpt3"
 )
 
 type OpenAIClient struct {
@@ -125,31 +122,4 @@ func (o *OpenAIClient) Ask(question string) (*TextCompletion, error) {
 	}
 
 	return &textCompletion, nil
-}
-
-func callCompletion(prompt string) error {
-
-	fmt.Printf("Call completion wit prompt: %s\n", prompt)
-	apiKey := os.Getenv("OPENAI_API_KEY")
-
-	if apiKey == "" {
-		return errors.New("Missing API KEY")
-	}
-
-	ctx := context.Background()
-	client := gpt3.NewClient(apiKey)
-
-	resp, err := client.Completion(ctx, gpt3.CompletionRequest{
-		Prompt:    []string{prompt},
-		MaxTokens: gpt3.IntPtr(30),
-		Stop:      []string{"."},
-		Echo:      true,
-	})
-
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(resp.Choices[0].Text)
-	return nil
 }
