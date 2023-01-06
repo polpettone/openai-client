@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func CodeCmd() *cobra.Command {
+func AskCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "code",
+		Use:   "ask",
 		Short: "",
 		Run: func(cmd *cobra.Command, args []string) {
-			stdout, err := handleCodeCommand(args)
+			stdout, err := handleAskCommand(args)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -21,7 +21,7 @@ func CodeCmd() *cobra.Command {
 	}
 }
 
-func handleCodeCommand(args []string) (string, error) {
+func handleAskCommand(args []string) (string, error) {
 
 	question := args[0]
 
@@ -39,6 +39,6 @@ func handleCodeCommand(args []string) (string, error) {
 }
 
 func init() {
-	codeCmd := CodeCmd()
-	rootCmd.AddCommand(codeCmd)
+	askCmd := AskCmd()
+	rootCmd.AddCommand(askCmd)
 }
