@@ -2,7 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"log"
+	"strings"
+	"time"
 )
 
 func Questioner(question string) (string, error) {
@@ -13,7 +14,7 @@ func Questioner(question string) (string, error) {
 	client, err := NewOpenAIClient()
 
 	if err != nil {
-		log.Fatal(err)
+		return "", nil
 	}
 
 	response, err := client.Ask(question)
@@ -31,12 +32,30 @@ func Questioner(question string) (string, error) {
 
 }
 
-func TextCompletionNew() {
+func ImageGenerator(query string) (string, error) {
 
-	err := callCompletion("The first thing you should know about javascript is")
+	fmt.Printf("generate image from: %s \n", query)
+	fmt.Printf("Wait a moment...\n")
+
+	client, err := NewOpenAIClient()
 
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
+	imageName := generateName(strings.Split(query, " ")[0])
+	err = client.GenerateImage(query, imageName)
+
+	if err != nil {
+		return "", err
+	}
+
+	return imageName, nil
+}
+
+func generateName(value string) string {
+	// Hol die aktuelle Zeit in Millisekunden
+	milliseconds := time.Now().UnixNano() / int64(time.Millisecond)
+
+	return fmt.Sprintf("%s-%d", value, milliseconds)
 }
