@@ -25,7 +25,11 @@ func AskCmd() *cobra.Command {
 func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error) {
 
 	path, err := cobraCommand.Flags().GetString("file")
+	if err != nil {
+		return "", err
+	}
 
+	model, err := cobraCommand.Flags().GetString("model")
 	if err != nil {
 		return "", err
 	}
@@ -46,7 +50,7 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", errors.New("no question asked")
 	}
 
-	result, err := Questioner(query)
+	result, err := Questioner(query, model)
 
 	if err != nil {
 		return "", err
@@ -64,6 +68,13 @@ func init() {
 		"f",
 		"",
 		"query from file, get appended to question from argument")
+
+	askCmd.Flags().StringP(
+		"model",
+		"m",
+		"text-davinci-003",
+		"model")
+
 }
 
 func readFromFile(path string) (string, error) {

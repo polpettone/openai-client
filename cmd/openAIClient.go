@@ -72,18 +72,32 @@ type Payload struct {
 	PresencePenalty  int     `json:"presence_penalty"`
 }
 
+var models = []string{
+	"code-cushman-001",
+	"code-davinci-002",
+	"text-davinci-003",
+}
+
 /// models
-/// code-cushman-001
-/// code-davinci-002
-/// text-davinci-003
-func (o *OpenAIClient) Ask(question string) (*TextCompletion, error) {
+func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, error) {
 
-	model := "text-davinci-003"
+	selectedModel := "text-davinci-003"
+	found := false
+	for _, elem := range models {
+		if elem == model {
+			selectedModel = elem
+			found = true
+		}
+	}
 
-	fmt.Printf("Using model: %s", model)
+	if !found {
+		fmt.Printf("Model: %s not found. Using Default Model \n", model)
+	}
+
+	fmt.Printf("Using model: %s \n", selectedModel)
 
 	payload := Payload{
-		Model:            model,
+		Model:            selectedModel,
 		Prompt:           question,
 		Temperature:      0.7,
 		MaxTokens:        256,

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func Questioner(question string) (string, error) {
+func Questioner(question string, model string) (string, error) {
 
 	fmt.Printf("Question: %s \n", question)
 	fmt.Printf("Wait a moment...\n")
@@ -17,7 +17,7 @@ func Questioner(question string) (string, error) {
 		return "", nil
 	}
 
-	response, err := client.Ask(question)
+	response, err := client.Ask(question, model)
 
 	if err != nil {
 		return "", err
