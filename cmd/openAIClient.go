@@ -120,7 +120,7 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 		Info().
 		Str("url", COMPLETION_URL).
 		RawJSON("requestBody", requestBody).
-		Msg("request")
+		Send()
 
 	if err != nil {
 		return nil, err
@@ -137,7 +137,6 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	req.Header.Set("Authorization", authHeader)
 	req.Header.Set("Content-Type", "application/json")
 
-	// Führe den Request aus
 	res, err := client.Do(req)
 
 	if err != nil {
@@ -158,8 +157,9 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	config.HistoryLogger.
 		Info().
 		Str("url", COMPLETION_URL).
+		Int("http_status_code", res.StatusCode).
 		RawJSON("responseBody", responseBody).
-		Msg("response")
+		Send()
 
 	if err != nil {
 		return nil, err

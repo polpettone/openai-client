@@ -13,12 +13,9 @@ var HistoryLogger zerolog.Logger
 var Logger zerolog.Logger
 
 func init() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
 	historyLogFile := openLogFile("history")
-	HistoryLogger = zerolog.New(historyLogFile)
-
-	Logger = zerolog.New(os.Stdout)
-
+	HistoryLogger = zerolog.New(historyLogFile).With().Timestamp().Logger()
+	Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }
 
