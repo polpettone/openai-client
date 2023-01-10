@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/polpettone/labor/openai-client/cmd/config"
 )
@@ -116,12 +117,6 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 
 	requestBody, err := json.Marshal(payload)
 
-	config.HistoryLogger.
-		Info().
-		Str("url", COMPLETION_URL).
-		RawJSON("requestBody", requestBody).
-		Send()
-
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +132,10 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	req.Header.Set("Authorization", authHeader)
 	req.Header.Set("Content-Type", "application/json")
 
+	startTime := time.Now()
 	res, err := client.Do(req)
+	endTime := time.Now()
+	requestDuration := endTime.Sub(startTime)
 
 	if err != nil {
 		return nil, err
@@ -157,8 +155,10 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	config.HistoryLogger.
 		Info().
 		Str("url", COMPLETION_URL).
+		Int64("response_time_ms", requestDuration.Milliseconds()).
 		Int("http_status_code", res.StatusCode).
-		RawJSON("responseBody", responseBody).
+		RawJSON("request_body", requestBody).
+		RawJSON("response_body", responseBody).
 		Send()
 
 	if err != nil {
