@@ -1,0 +1,6 @@
+  func buildRequest(requestBody []byte, url string) (*http.Request, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	return req, err
+}
+
+

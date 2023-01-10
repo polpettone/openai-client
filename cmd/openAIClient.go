@@ -9,6 +9,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/polpettone/labor/openai-client/cmd/config"
 )
 
 type OpenAIClient struct {
@@ -106,24 +108,27 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 		PresencePenalty:  0,
 	}
 
-	// Setze die URL und den Auth-Header des Requests
 	url := "https://api.openai.com/v1/completions"
 	authHeader := fmt.Sprintf("Bearer %s", o.apiKey)
 
-	// Setze den Request-Body
 	requestBody, err := json.Marshal(payload)
+
+	config.HistoryLogger.Info().RawJSON("requestBody", requestBody).Msg("request")
 
 	if err != nil {
 		return nil, err
 	}
 
-	// Erstelle einen neuen HTTP-Client
+	fmt.Printf("\n %s \n", requestBody)
+
 	client := &http.Client{}
 
-	// Erstelle einen neuen Request
-	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
 
-	// Setze den Auth-Header des Requests
+	if err != nil {
+		return nil, err
+	}
+
 	req.Header.Set("Authorization", authHeader)
 	req.Header.Set("Content-Type", "application/json")
 
@@ -145,6 +150,8 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 
 	var textCompletion TextCompletion
 	err = json.Unmarshal([]byte(responseBody), &textCompletion)
+
+	config.HistoryLogger.Info().RawJSON("responseBody", responseBody).Msg("response")
 
 	if err != nil {
 		return nil, err
@@ -197,8 +204,6 @@ func (o *OpenAIClient) GenerateImage(imageDescription string, imageName string) 
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(string(responseBody))
 
 	var response ImageResponse
 	err = json.Unmarshal([]byte(responseBody), &response)
