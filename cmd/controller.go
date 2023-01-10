@@ -7,10 +7,6 @@ import (
 )
 
 func Questioner(question string, model string) (string, error) {
-
-	fmt.Printf("Question: %s \n", question)
-	fmt.Printf("Wait a moment...\n")
-
 	client, err := NewOpenAIClient()
 
 	if err != nil {

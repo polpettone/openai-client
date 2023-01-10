@@ -80,6 +80,8 @@ var models = []string{
 	"text-davinci-003",
 }
 
+const COMPLETION_URL string = "https://api.openai.com/v1/completions"
+
 /// models
 func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, error) {
 
@@ -93,10 +95,12 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	}
 
 	if !found {
-		fmt.Printf("Model: %s not found. Using Default Model \n", model)
+		config.Logger.
+			Debug().
+			Msgf("Model: %s not found. Using Default Model \n", model)
 	}
 
-	fmt.Printf("Using model: %s \n", selectedModel)
+	config.Logger.Debug().Msgf("Using model: %s \n", selectedModel)
 
 	payload := Payload{
 		Model:            selectedModel,
@@ -108,22 +112,23 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 		PresencePenalty:  0,
 	}
 
-	url := "https://api.openai.com/v1/completions"
 	authHeader := fmt.Sprintf("Bearer %s", o.apiKey)
 
 	requestBody, err := json.Marshal(payload)
 
-	config.HistoryLogger.Info().RawJSON("requestBody", requestBody).Msg("request")
+	config.HistoryLogger.
+		Info().
+		Str("url", COMPLETION_URL).
+		RawJSON("requestBody", requestBody).
+		Msg("request")
 
 	if err != nil {
 		return nil, err
 	}
 
-	fmt.Printf("\n %s \n", requestBody)
-
 	client := &http.Client{}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	req, err := http.NewRequest("POST", COMPLETION_URL, bytes.NewBuffer(requestBody))
 
 	if err != nil {
 		return nil, err
@@ -141,7 +146,6 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 
 	defer res.Body.Close()
 
-	// Lies die Antwort aus
 	responseBody, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
@@ -151,7 +155,11 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	var textCompletion TextCompletion
 	err = json.Unmarshal([]byte(responseBody), &textCompletion)
 
-	config.HistoryLogger.Info().RawJSON("responseBody", responseBody).Msg("response")
+	config.HistoryLogger.
+		Info().
+		Str("url", COMPLETION_URL).
+		RawJSON("responseBody", responseBody).
+		Msg("response")
 
 	if err != nil {
 		return nil, err
