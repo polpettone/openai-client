@@ -45,6 +45,11 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", err
 	}
 
+	outputFile, err := cobraCommand.Flags().GetString("outputFile")
+	if err != nil {
+		return "", err
+	}
+
 	var queryContentFromFile string
 
 	if openEditor {
@@ -82,6 +87,13 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", err
 	}
 
+	if outputFile != "" {
+		err := pkg.WriteToFile(outputFile, result)
+		if err != nil {
+			return "", err
+		}
+	}
+
 	return result, nil
 }
 
@@ -112,6 +124,11 @@ func init() {
 		0.7,
 		"https://beta.openai.com/docs/api-reference/completions/create#completions/create-temperature")
 
+	askCmd.Flags().StringP(
+		"outputFile",
+		"o",
+		"",
+		"write response also to a given file")
 }
 
 func readFromFile(path string) (string, error) {
