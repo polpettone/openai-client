@@ -34,6 +34,11 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", err
 	}
 
+	temperature, err := cobraCommand.Flags().GetFloat64("temperature")
+	if err != nil {
+		return "", err
+	}
+
 	var fileContent string
 	if path != "" {
 		fileContent, err = readFromFile(path)
@@ -50,7 +55,7 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", errors.New("no question asked")
 	}
 
-	result, err := Questioner(query, model)
+	result, err := Questioner(query, model, temperature)
 
 	if err != nil {
 		return "", err
@@ -74,6 +79,11 @@ func init() {
 		"m",
 		"text-davinci-003",
 		"model")
+
+	askCmd.Flags().Float64(
+		"temperature",
+		0.7,
+		"https://beta.openai.com/docs/api-reference/completions/create#completions/create-temperature")
 
 }
 

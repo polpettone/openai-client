@@ -6,14 +6,17 @@ import (
 	"time"
 )
 
-func Questioner(question string, model string) (string, error) {
+func Questioner(
+	question string,
+	model string,
+	temperature float64) (string, error) {
 	client, err := NewOpenAIClient()
 
 	if err != nil {
 		return "", nil
 	}
 
-	response, err := client.Ask(question, model)
+	response, err := client.Ask(question, model, temperature)
 
 	if err != nil {
 		return "", err

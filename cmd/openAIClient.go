@@ -84,7 +84,10 @@ var models = []string{
 const COMPLETION_URL string = "https://api.openai.com/v1/completions"
 
 /// models
-func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, error) {
+func (o *OpenAIClient) Ask(
+	question string,
+	model string,
+	temperature float64) (*TextCompletion, error) {
 
 	selectedModel := "text-davinci-003"
 	found := false
@@ -106,7 +109,7 @@ func (o *OpenAIClient) Ask(question string, model string) (*TextCompletion, erro
 	payload := Payload{
 		Model:            selectedModel,
 		Prompt:           question,
-		Temperature:      0.7,
+		Temperature:      temperature,
 		MaxTokens:        256,
 		TopP:             1,
 		FrequencyPenalty: 0,
