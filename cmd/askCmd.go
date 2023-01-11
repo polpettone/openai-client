@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/polpettone/labor/openai-client/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -24,6 +25,11 @@ func AskCmd() *cobra.Command {
 
 func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error) {
 
+	openEditor, err := cobraCommand.Flags().GetBool("queryFromEditor")
+	if err != nil {
+		return "", err
+	}
+
 	path, err := cobraCommand.Flags().GetString("file")
 	if err != nil {
 		return "", err
@@ -39,17 +45,32 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", err
 	}
 
-	var fileContent string
-	if path != "" {
-		fileContent, err = readFromFile(path)
+	var queryContentFromFile string
+
+	if openEditor {
+		queryContentFromFile, err = pkg.CaptureInputFromEditor("")
 		if err != nil {
 			return "", err
 		}
+	} else {
+		if path != "" {
+			queryContentFromFile, err = readFromFile(path)
+			if err != nil {
+				return "", err
+			}
+		}
 	}
 
-	contentFromArg := args[0]
+	var contentFromArg string
+	if len(args) > 0 {
+		contentFromArg = args[0]
+	}
 
-	query := fmt.Sprintf("%s \n %s", contentFromArg, fileContent)
+	if contentFromArg == "" && queryContentFromFile == "" {
+		return "", errors.New("No query. Provide one as argument or via file")
+	}
+
+	query := fmt.Sprintf("%s \n %s", contentFromArg, queryContentFromFile)
 
 	if query == "" {
 		return "", errors.New("no question asked")
@@ -67,6 +88,12 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 func init() {
 	askCmd := AskCmd()
 	rootCmd.AddCommand(askCmd)
+
+	askCmd.Flags().BoolP(
+		"queryFromEditor",
+		"q",
+		false,
+		"opens a temp file in an editor to write a query")
 
 	askCmd.Flags().StringP(
 		"file",
