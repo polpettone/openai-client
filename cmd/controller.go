@@ -9,14 +9,15 @@ import (
 func Questioner(
 	question string,
 	model string,
-	temperature float64) (string, error) {
+	temperature float64,
+	maxTokens int) (string, error) {
 	client, err := NewOpenAIClient()
 
 	if err != nil {
 		return "", nil
 	}
 
-	response, err := client.Ask(question, model, temperature)
+	response, err := client.Ask(question, model, temperature, maxTokens)
 
 	if err != nil {
 		return "", err

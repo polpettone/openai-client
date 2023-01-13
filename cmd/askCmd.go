@@ -50,6 +50,11 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", err
 	}
 
+	maxTokens, err := cobraCommand.Flags().GetInt("maxTokens")
+	if err != nil {
+		return "", err
+	}
+
 	var queryContentFromFile string
 
 	if openEditor {
@@ -81,7 +86,7 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", errors.New("no question asked")
 	}
 
-	result, err := Questioner(query, model, temperature)
+	result, err := Questioner(query, model, temperature, maxTokens)
 
 	if err != nil {
 		return "", err
@@ -129,6 +134,12 @@ func init() {
 		"o",
 		"",
 		"write response also to a given file")
+
+	askCmd.Flags().IntP(
+		"maxTokens",
+		"t",
+		256,
+		"")
 }
 
 func readFromFile(path string) (string, error) {

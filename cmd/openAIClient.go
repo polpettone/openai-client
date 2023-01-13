@@ -86,7 +86,8 @@ const COMPLETION_URL string = "https://api.openai.com/v1/completions"
 func (o *OpenAIClient) Ask(
 	question string,
 	model string,
-	temperature float64) (*TextCompletion, error) {
+	temperature float64,
+	maxTokens int) (*TextCompletion, error) {
 
 	config.Logger.Debug().Msgf("Using model: %s \n", model)
 
@@ -94,7 +95,7 @@ func (o *OpenAIClient) Ask(
 		Model:            model,
 		Prompt:           question,
 		Temperature:      temperature,
-		MaxTokens:        1000,
+		MaxTokens:        maxTokens,
 		TopP:             1,
 		FrequencyPenalty: 0,
 		PresencePenalty:  0,
