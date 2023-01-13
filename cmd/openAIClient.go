@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
 
 	"github.com/polpettone/labor/openai-client/cmd/config"
+	"github.com/polpettone/labor/openai-client/pkg"
 )
 
 type OpenAIClient struct {
@@ -26,59 +26,6 @@ func NewOpenAIClient() (*OpenAIClient, error) {
 	}
 
 	return &OpenAIClient{apiKey: apiKey}, nil
-}
-
-type ImageCreatingPayload struct {
-	Prompt string `json:"prompt"`
-	N      int    `json:"n"`
-	Size   string `json:"size"`
-}
-
-type ImageResponse struct {
-	Created int                `json:"created"`
-	Data    []ImageResponseURL `json:"data"`
-}
-
-type ImageResponseURL struct {
-	URL string `json:"url"`
-}
-
-type TextCompletion struct {
-	ID      string   `json:"id"`
-	Object  string   `json:"object"`
-	Created int      `json:"created"`
-	Model   string   `json:"model"`
-	Choices []Choice `json:"choices"`
-	Usage   Usage    `json:"usage"`
-}
-
-type Choice struct {
-	Text         string      `json:"text"`
-	Index        int         `json:"index"`
-	LogProbs     interface{} `json:"logprobs"`
-	FinishReason string      `json:"finish_reason"`
-}
-
-type Usage struct {
-	PromptTokens     int `json:"prompt_tokens"`
-	CompletionTokens int `json:"completion_tokens"`
-	TotalTokens      int `json:"total_tokens"`
-}
-
-type Payload struct {
-	Model            string  `json:"model"`
-	Prompt           string  `json:"prompt"`
-	Temperature      float64 `json:"temperature"`
-	MaxTokens        int     `json:"max_tokens"`
-	TopP             int     `json:"top_p"`
-	FrequencyPenalty int     `json:"frequency_penalty"`
-	PresencePenalty  int     `json:"presence_penalty"`
-}
-
-var models = []string{
-	"code-cushman-001",
-	"code-davinci-002",
-	"text-davinci-003",
 }
 
 const COMPLETION_URL string = "https://api.openai.com/v1/completions"
@@ -199,7 +146,7 @@ func (o *OpenAIClient) GenerateImage(imageDescription string, imageName string) 
 		return err
 	}
 
-	err = downloadImageFromUrl(response.Data[0].URL, imageName)
+	err = pkg.DownloadFileFromUrl(response.Data[0].URL, imageName)
 
 	if err != nil {
 		return err
@@ -237,40 +184,4 @@ func (o *OpenAIClient) ListModels() ([]Model, error) {
 	}
 
 	return modelList.Data, nil
-}
-func downloadImageFromUrl(url string, imageName string) error {
-
-	fmt.Println("Download Image ...")
-	client := &http.Client{}
-
-	req, _ := http.NewRequest("GET", url, nil)
-
-	res, err := client.Do(req)
-
-	if err != nil {
-		return err
-	}
-
-	defer res.Body.Close()
-
-	if res.StatusCode != http.StatusOK {
-		fmt.Println("Fehler beim Herunterladen des Bildes:", res.Status)
-		return nil
-	}
-
-	file, err := os.Create(imageName)
-	if err != nil {
-		fmt.Println("Fehler beim Erstellen der Datei:", err)
-		return err
-	}
-	defer file.Close()
-
-	_, err = io.Copy(file, res.Body)
-	if err != nil {
-		fmt.Println("Fehler beim Schreiben des Bildes:", err)
-		return err
-	}
-
-	fmt.Println("Bild erfolgreich heruntergeladen.")
-	return nil
 }
