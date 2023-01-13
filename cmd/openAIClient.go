@@ -88,28 +88,13 @@ func (o *OpenAIClient) Ask(
 	model string,
 	temperature float64) (*TextCompletion, error) {
 
-	selectedModel := "text-davinci-003"
-	found := false
-	for _, elem := range models {
-		if elem == model {
-			selectedModel = elem
-			found = true
-		}
-	}
-
-	if !found {
-		config.Logger.
-			Debug().
-			Msgf("Model: %s not found. Using Default Model \n", model)
-	}
-
-	config.Logger.Debug().Msgf("Using model: %s \n", selectedModel)
+	config.Logger.Debug().Msgf("Using model: %s \n", model)
 
 	payload := Payload{
-		Model:            selectedModel,
+		Model:            model,
 		Prompt:           question,
 		Temperature:      temperature,
-		MaxTokens:        256,
+		MaxTokens:        1000,
 		TopP:             1,
 		FrequencyPenalty: 0,
 		PresencePenalty:  0,
@@ -178,7 +163,6 @@ func (o *OpenAIClient) GenerateImage(imageDescription string, imageName string) 
 		Size:   "1024x1024",
 	}
 
-	// Setze die URL und den Auth-Header des Requests
 	url := "https://api.openai.com/v1/images/generations"
 	authHeader := fmt.Sprintf("Bearer %s", o.apiKey)
 
@@ -189,17 +173,10 @@ func (o *OpenAIClient) GenerateImage(imageDescription string, imageName string) 
 		return err
 	}
 
-	// Erstelle einen neuen HTTP-Client
 	client := &http.Client{}
-
-	// Erstelle einen neuen Request
 	req, _ := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
-
-	// Setze den Auth-Header des Requests
 	req.Header.Set("Authorization", authHeader)
 	req.Header.Set("Content-Type", "application/json")
-
-	// Führe den Request aus
 	res, err := client.Do(req)
 
 	if err != nil {
@@ -208,7 +185,6 @@ func (o *OpenAIClient) GenerateImage(imageDescription string, imageName string) 
 
 	defer res.Body.Close()
 
-	// Lies die Antwort aus
 	responseBody, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
@@ -232,6 +208,35 @@ func (o *OpenAIClient) GenerateImage(imageDescription string, imageName string) 
 
 }
 
+func (o *OpenAIClient) ListModels() ([]Model, error) {
+
+	url := "https://api.openai.com/v1/models"
+	authHeader := fmt.Sprintf("Bearer %s", o.apiKey)
+
+	client := &http.Client{}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("Authorization", authHeader)
+	req.Header.Set("Content-Type", "application/json")
+	res, err := client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+
+	var modelList ModelList
+
+	err = json.Unmarshal([]byte(responseBody), &modelList)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return modelList.Data, nil
+}
 func downloadImageFromUrl(url string, imageName string) error {
 
 	fmt.Println("Download Image ...")

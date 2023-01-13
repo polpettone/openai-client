@@ -37,7 +37,6 @@ func ImageGenerator(query string) (string, error) {
 	fmt.Printf("Wait a moment...\n")
 
 	client, err := NewOpenAIClient()
-
 	if err != nil {
 		return "", err
 	}
@@ -50,6 +49,19 @@ func ImageGenerator(query string) (string, error) {
 	}
 
 	return imageName, nil
+}
+
+func ListModels() ([]Model, error) {
+
+	client, err := NewOpenAIClient()
+	if err != nil {
+		return nil, err
+	}
+	models, err := client.ListModels()
+	if err != nil {
+		return nil, err
+	}
+	return models, nil
 }
 
 func generateName(value string) string {
