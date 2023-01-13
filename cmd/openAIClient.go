@@ -83,7 +83,6 @@ var models = []string{
 
 const COMPLETION_URL string = "https://api.openai.com/v1/completions"
 
-/// models
 func (o *OpenAIClient) Ask(
 	question string,
 	model string,

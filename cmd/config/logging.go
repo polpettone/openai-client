@@ -13,7 +13,7 @@ var HistoryLogger zerolog.Logger
 var Logger zerolog.Logger
 
 func init() {
-	historyLogFile := openLogFile("history")
+	historyLogFile := openLogFile("openai-history-log.json")
 	HistoryLogger = zerolog.New(historyLogFile).With().Timestamp().Logger()
 	Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
