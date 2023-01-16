@@ -1,3 +1,4 @@
 history
 .idea/
 openai-history-log.json
+*.log
