@@ -3,6 +3,8 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"strings"
+	"sync"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +26,11 @@ func ImageCmd() *cobra.Command {
 func handleImageCommand(cobraCommand *cobra.Command, args []string) (string, error) {
 
 	path, err := cobraCommand.Flags().GetString("file")
+	if err != nil {
+		return "", err
+	}
 
+	countOfCreations, err := cobraCommand.Flags().GetInt("countOfCreations")
 	if err != nil {
 		return "", err
 	}
@@ -37,7 +43,10 @@ func handleImageCommand(cobraCommand *cobra.Command, args []string) (string, err
 		}
 	}
 
-	contentFromArg := args[0]
+	var contentFromArg string
+	if len(args) > 0 {
+		contentFromArg = args[0]
+	}
 
 	query := fmt.Sprintf("%s \n %s", contentFromArg, fileContent)
 
@@ -45,13 +54,25 @@ func handleImageCommand(cobraCommand *cobra.Command, args []string) (string, err
 		return "", errors.New("no query")
 	}
 
-	imageName, err := ImageGenerator(query)
+	var wg sync.WaitGroup
+
+	for n := 0; n < countOfCreations; n++ {
+
+		imageName := generateName(strings.Split(query, " ")[0])
+
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			ImageGenerator(query, imageName)
+		}()
+	}
+	wg.Wait()
 
 	if err != nil {
 		return "", err
 	}
 
-	return imageName, err
+	return "done", err
 }
 
 func init() {
@@ -63,4 +84,10 @@ func init() {
 		"f",
 		"",
 		"query from file, get appended to question from argument")
+
+	imageCmd.Flags().IntP(
+		"countOfCreations",
+		"n",
+		1,
+		"image get n times created")
 }

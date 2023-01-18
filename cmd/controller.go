@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -32,17 +31,12 @@ func Questioner(
 
 }
 
-func ImageGenerator(query string) (string, error) {
-
-	fmt.Printf("generate image from: %s \n", query)
-	fmt.Printf("Wait a moment...\n")
-
+func ImageGenerator(query string, imageName string) (string, error) {
 	client, err := NewOpenAIClient()
 	if err != nil {
 		return "", err
 	}
 
-	imageName := generateName(strings.Split(query, " ")[0])
 	err = client.GenerateImage(query, imageName)
 
 	if err != nil {
@@ -66,7 +60,7 @@ func ListModels() ([]Model, error) {
 }
 
 func generateName(value string) string {
-	// Hol die aktuelle Zeit in Millisekunden
+	time.Sleep(10 * time.Millisecond)
 	milliseconds := time.Now().UnixNano() / int64(time.Millisecond)
 
 	return fmt.Sprintf("%s-%d", value, milliseconds)

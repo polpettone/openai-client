@@ -10,7 +10,6 @@ import (
 
 func DownloadFileFromUrl(url string, imageName string) error {
 
-	fmt.Println("Download Image ...")
 	client := &http.Client{}
 
 	req, _ := http.NewRequest("GET", url, nil)
