@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"strings"
 	"testing"
 )
 
@@ -15,8 +14,8 @@ func TestAdd(t *testing.T) {
 	contextMemory.Add("D")
 	contextMemory.Add("E")
 
-	result := strings.Join(contextMemory.All(), ",")
-	expected := "D,E,C"
+	result := contextMemory.All()
+	expected := "D\nE\nC\n"
 	if result != expected {
 		t.Errorf("Wanted %s, got %s", expected, result)
 	}

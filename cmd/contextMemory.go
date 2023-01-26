@@ -19,8 +19,13 @@ func (c *ContextMemory) Add(value string) {
 	c.tail = (c.tail + 1) % c.size
 }
 
-func (c *ContextMemory) All() []string {
-	return c.buffer
+func (c *ContextMemory) All() string {
+	all := ""
+	for n := 0; n < c.size; n++ {
+		all += c.buffer[n]
+		all += "\n"
+	}
+	return all
 }
 
 func (c *ContextMemory) Reset() {

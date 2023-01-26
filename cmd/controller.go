@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 	"time"
 )
 
@@ -34,7 +33,7 @@ func (p *Provider) Prompt(
 	prompt := text
 
 	if p.contextEnabled {
-		prompt = fmt.Sprintf("%s \n %s", strings.Join(p.contextMemory.All(), "\n"), text)
+		prompt = fmt.Sprintf("%s \n %s", p.contextMemory.All(), text)
 	}
 
 	if p.contextEnabled {

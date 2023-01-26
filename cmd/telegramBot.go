@@ -21,7 +21,7 @@ func StartBot() error {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	provider := Provider{}
+	provider := NewProvider(10, true)
 
 	for update := range updates {
 		if update.Message == nil {
