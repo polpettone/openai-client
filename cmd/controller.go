@@ -23,8 +23,8 @@ func Questioner(
 	}
 
 	var result string
-	for k, v := range response.Choices {
-		result = fmt.Sprintf("%d: \n %s \n", k, v.Text)
+	for _, v := range response.Choices {
+		result = fmt.Sprintf("%s\n", v.Text)
 	}
 
 	return result, nil

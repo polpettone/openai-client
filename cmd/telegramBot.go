@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
@@ -37,29 +39,27 @@ func StartBot() error {
 			continue
 		}
 
-		// Now that we know we've gotten a new message, we can construct a
-		// reply! We'll take the Chat ID and Text from the incoming message
-		// and use it to create a new message.
+		fmt.Printf("MessageFrom: %s\n", update.Message.From)
+
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		// We'll also say that this message is a reply to the previous message.
-		// For any other specifications than Chat ID or Text, you'll need to
-		// set fields on the `MessageConfig`.
-		msg.ReplyToMessageID = update.Message.MessageID
 
-		response, err := Questioner(msg.Text, "text-davinci-003", 0.7, 1000)
+		triggerWord := "openAI"
+		prompt := ""
+		response := "no prompt to openai"
 
-		if err != nil {
-			return err
+		if strings.Contains(msg.Text, triggerWord) {
+
+			prompt = strings.Replace(msg.Text, triggerWord, "", -1)
+			response, err = Questioner(prompt, "text-davinci-003", 0.7, 256)
+			if err != nil {
+				return err
+			}
 		}
 
+		msg.ReplyToMessageID = update.Message.MessageID
 		msg.Text = response
 
-		// Okay, we're sending our message off! We don't care about the message
-		// we just sent, so we'll discard it.
 		if _, err := bot.Send(msg); err != nil {
-			// Note that panics are a bad way to handle errors. Telegram can
-			// have service outages or network errors, you should retry sending
-			// messages or more gracefully handle failures.
 			return err
 		}
 	}
