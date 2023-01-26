@@ -86,7 +86,9 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", errors.New("no question asked")
 	}
 
-	result, err := Questioner(query, model, temperature, maxTokens)
+	provider := NewProvider(10, false)
+
+	result, err := provider.Prompt(query, model, temperature, maxTokens)
 
 	if err != nil {
 		return "", err

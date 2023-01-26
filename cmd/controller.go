@@ -2,11 +2,26 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
-func Questioner(
-	question string,
+type Provider struct {
+	contextMemory  *ContextMemory
+	contextEnabled bool
+}
+
+func NewProvider(memorySize int, contextEnabled bool) *Provider {
+
+	return &Provider{
+		contextMemory:  NewContextMemory(memorySize),
+		contextEnabled: contextEnabled,
+	}
+
+}
+
+func (p *Provider) Prompt(
+	text string,
 	model string,
 	temperature float64,
 	maxTokens int) (string, error) {
@@ -16,7 +31,17 @@ func Questioner(
 		return "", nil
 	}
 
-	response, err := client.Ask(question, model, temperature, maxTokens)
+	prompt := text
+
+	if p.contextEnabled {
+		prompt = fmt.Sprintf("%s \n %s", strings.Join(p.contextMemory.All(), "\n"), text)
+	}
+
+	if p.contextEnabled {
+		p.contextMemory.Add(text)
+	}
+
+	response, err := client.Complete(prompt, model, temperature, maxTokens)
 
 	if err != nil {
 		return "", err
@@ -25,6 +50,9 @@ func Questioner(
 	var result string
 	for _, v := range response.Choices {
 		result = fmt.Sprintf("%s\n", v.Text)
+		if p.contextEnabled {
+			p.contextMemory.Add(result)
+		}
 	}
 
 	return result, nil

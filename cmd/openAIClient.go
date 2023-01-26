@@ -30,7 +30,7 @@ func NewOpenAIClient() (*OpenAIClient, error) {
 
 const COMPLETION_URL string = "https://api.openai.com/v1/completions"
 
-func (o *OpenAIClient) Ask(
+func (o *OpenAIClient) Complete(
 	question string,
 	model string,
 	temperature float64,

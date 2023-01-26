@@ -21,6 +21,8 @@ func StartBot() error {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
+	provider := Provider{}
+
 	for update := range updates {
 		if update.Message == nil {
 			continue
@@ -37,7 +39,8 @@ func StartBot() error {
 		if strings.Contains(msg.Text, triggerWord) {
 
 			prompt = strings.Replace(msg.Text, triggerWord, "", -1)
-			response, err = Questioner(prompt, "text-davinci-003", 0.7, 256)
+
+			response, err = provider.Prompt(prompt, "text-davinci-003", 0.7, 256)
 			if err != nil {
 				return err
 			}
