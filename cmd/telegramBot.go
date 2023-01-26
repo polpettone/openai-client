@@ -32,11 +32,16 @@ func StartBot() error {
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
+		triggerClearContext := "clearContext"
 		triggerWord := "openAI"
 		prompt := ""
 		response := "no prompt to openai"
 
 		if strings.Contains(msg.Text, triggerWord) {
+
+			if strings.Contains(msg.Text, triggerClearContext) {
+				provider.ClearContext()
+			}
 
 			prompt = strings.Replace(msg.Text, triggerWord, "", -1)
 

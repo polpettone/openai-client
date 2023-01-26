@@ -19,6 +19,10 @@ func NewProvider(memorySize int, contextEnabled bool) *Provider {
 
 }
 
+func (p *Provider) ClearContext() {
+	p.contextMemory.Reset()
+}
+
 func (p *Provider) Prompt(
 	text string,
 	model string,
