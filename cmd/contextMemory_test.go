@@ -26,10 +26,10 @@ func TestMaxTokens(t *testing.T) {
 	contextMemory.Add(&Entry{value: "A", tokens: 1})
 	contextMemory.Add(&Entry{value: "B", tokens: 1})
 	contextMemory.Add(&Entry{value: "C", tokens: 1})
-	contextMemory.Add(&Entry{value: "D", tokens: 1})
+	contextMemory.Add(&Entry{value: "D", tokens: 3})
 
 	result := contextMemory.All()
-	expected := "B\nC\nD\n"
+	expected := "D\n"
 	if result != expected {
 		t.Errorf("Wanted %s, got %s", expected, result)
 	}

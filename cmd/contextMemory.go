@@ -22,10 +22,9 @@ func (c *ContextMemory) Add(value *Entry) {
 	c.buffer = append(c.buffer, value)
 
 	i := 0
-	if c.TokenCount() > c.maxTokens {
+	for c.TokenCount() > c.maxTokens {
 		c.buffer = append(c.buffer[:i], c.buffer[i+1:]...)
 	}
-
 }
 
 func (c *ContextMemory) All() string {
