@@ -7,9 +7,10 @@ type Entry struct {
 
 //todo repo to save state
 type ContextMemory struct {
-	buffer []*Entry
-	size   int
-	tail   int
+	buffer    []*Entry
+	size      int
+	tail      int
+	maxTokens int
 }
 
 func NewContextMemory(size int) *ContextMemory {
@@ -37,4 +38,14 @@ func (c *ContextMemory) All() string {
 
 func (c *ContextMemory) Reset() {
 	c.buffer = make([]*Entry, c.size)
+}
+
+func (c *ContextMemory) TokenCount() int {
+	count := 0
+	for _, k := range c.buffer {
+		if k != nil {
+			count += k.tokens
+		}
+	}
+	return count
 }
