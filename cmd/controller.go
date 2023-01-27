@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"time"
+
+	"github.com/polpettone/labor/openai-client/cmd/config"
 )
 
 type Provider struct {
@@ -10,10 +12,10 @@ type Provider struct {
 	contextEnabled bool
 }
 
-func NewProvider(memorySize int, contextEnabled bool) *Provider {
+func NewProvider(maxTokens int, contextEnabled bool) *Provider {
 
 	return &Provider{
-		contextMemory:  NewContextMemory(memorySize),
+		contextMemory:  NewContextMemory(maxTokens),
 		contextEnabled: contextEnabled,
 	}
 
@@ -62,10 +64,17 @@ func (p *Provider) Prompt(
 	for _, v := range response.Choices {
 		result = fmt.Sprintf("%s\n", v.Text)
 		if p.contextEnabled {
-			entry := &Entry{value: text, tokens: completionTokens}
+			entry := &Entry{value: result, tokens: completionTokens}
 			p.contextMemory.Add(entry)
 		}
 	}
+
+	config.ContextMemoryLogger.
+		Info().
+		Str("memory", p.contextMemory.All()).
+		Int("token_count", p.contextMemory.TokenCount()).
+		Int("max_tokens", p.contextMemory.maxTokens).
+		Send()
 
 	return result, nil
 

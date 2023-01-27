@@ -11,11 +11,25 @@ func TestAdd(t *testing.T) {
 	contextMemory.Add(&Entry{value: "A", tokens: 1})
 	contextMemory.Add(&Entry{value: "B", tokens: 1})
 	contextMemory.Add(&Entry{value: "C", tokens: 1})
-	contextMemory.Add(&Entry{value: "D", tokens: 1})
-	contextMemory.Add(&Entry{value: "E", tokens: 1})
 
 	result := contextMemory.All()
-	expected := "D\nE\nC\n"
+	expected := "A\nB\nC\n"
+	if result != expected {
+		t.Errorf("Wanted %s, got %s", expected, result)
+	}
+}
+
+func TestMaxTokens(t *testing.T) {
+
+	contextMemory := NewContextMemory(3)
+
+	contextMemory.Add(&Entry{value: "A", tokens: 1})
+	contextMemory.Add(&Entry{value: "B", tokens: 1})
+	contextMemory.Add(&Entry{value: "C", tokens: 1})
+	contextMemory.Add(&Entry{value: "D", tokens: 1})
+
+	result := contextMemory.All()
+	expected := "B\nC\nD\n"
 	if result != expected {
 		t.Errorf("Wanted %s, got %s", expected, result)
 	}

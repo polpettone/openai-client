@@ -8,28 +8,31 @@ type Entry struct {
 //todo repo to save state
 type ContextMemory struct {
 	buffer    []*Entry
-	size      int
-	tail      int
 	maxTokens int
 }
 
-func NewContextMemory(size int) *ContextMemory {
+func NewContextMemory(maxTokens int) *ContextMemory {
 	return &ContextMemory{
-		size:   size,
-		buffer: make([]*Entry, size),
+		buffer:    []*Entry{},
+		maxTokens: maxTokens,
 	}
 }
 
 func (c *ContextMemory) Add(value *Entry) {
-	c.buffer[c.tail] = value
-	c.tail = (c.tail + 1) % c.size
+	c.buffer = append(c.buffer, value)
+
+	i := 0
+	if c.TokenCount() > c.maxTokens {
+		c.buffer = append(c.buffer[:i], c.buffer[i+1:]...)
+	}
+
 }
 
 func (c *ContextMemory) All() string {
 	all := ""
-	for n := 0; n < c.size; n++ {
-		if c.buffer[n] != nil {
-			all += c.buffer[n].value
+	for _, v := range c.buffer {
+		if v != nil {
+			all += v.value
 			all += "\n"
 		}
 	}
@@ -37,7 +40,7 @@ func (c *ContextMemory) All() string {
 }
 
 func (c *ContextMemory) Reset() {
-	c.buffer = make([]*Entry, c.size)
+	c.buffer = []*Entry{}
 }
 
 func (c *ContextMemory) TokenCount() int {

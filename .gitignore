@@ -1,4 +1,5 @@
 history
 .idea/
 openai-history-log.json
+context-memory.json
 *.log

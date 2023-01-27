@@ -11,10 +11,13 @@ import (
 
 var HistoryLogger zerolog.Logger
 var Logger zerolog.Logger
+var ContextMemoryLogger zerolog.Logger
 
 func init() {
+	contextMemoryLogFile := openLogFile("context-memory.json")
 	historyLogFile := openLogFile("openai-history-log.json")
 	HistoryLogger = zerolog.New(historyLogFile).With().Timestamp().Logger()
+	ContextMemoryLogger = zerolog.New(contextMemoryLogFile).With().Timestamp().Logger()
 	Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()
 	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }
