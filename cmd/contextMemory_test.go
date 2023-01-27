@@ -19,5 +19,18 @@ func TestAdd(t *testing.T) {
 	if result != expected {
 		t.Errorf("Wanted %s, got %s", expected, result)
 	}
+}
+
+func TestClear(t *testing.T) {
+
+	contextMemory := NewContextMemory(10)
+
+	contextMemory.Reset()
+
+	result := contextMemory.All()
+	expected := ""
+	if result != expected {
+		t.Errorf("Wanted %s, got |%s|", expected, result)
+	}
 
 }

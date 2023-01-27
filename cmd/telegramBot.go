@@ -41,13 +41,13 @@ func StartBot() error {
 
 			if strings.Contains(msg.Text, triggerClearContext) {
 				provider.ClearContext()
-			}
-
-			prompt = strings.Replace(msg.Text, triggerWord, "", -1)
-
-			response, err = provider.Prompt(prompt, "text-davinci-003", 0.7, 256)
-			if err != nil {
-				return err
+				response = "context cleared"
+			} else {
+				prompt = strings.Replace(msg.Text, triggerWord, "", -1)
+				response, err = provider.Prompt(prompt, "text-davinci-003", 0.7, 256)
+				if err != nil {
+					return err
+				}
 			}
 		}
 
@@ -57,6 +57,7 @@ func StartBot() error {
 		if _, err := bot.Send(msg); err != nil {
 			return err
 		}
+
 	}
 	return nil
 }

@@ -22,8 +22,10 @@ func (c *ContextMemory) Add(value string) {
 func (c *ContextMemory) All() string {
 	all := ""
 	for n := 0; n < c.size; n++ {
-		all += c.buffer[n]
-		all += "\n"
+		if c.buffer[n] != "" {
+			all += c.buffer[n]
+			all += "\n"
+		}
 	}
 	return all
 }
