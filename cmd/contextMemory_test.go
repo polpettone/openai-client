@@ -8,11 +8,11 @@ func TestAdd(t *testing.T) {
 
 	contextMemory := NewContextMemory(3)
 
-	contextMemory.Add("A")
-	contextMemory.Add("B")
-	contextMemory.Add("C")
-	contextMemory.Add("D")
-	contextMemory.Add("E")
+	contextMemory.Add(&Entry{value: "A", tokens: 1})
+	contextMemory.Add(&Entry{value: "B", tokens: 1})
+	contextMemory.Add(&Entry{value: "C", tokens: 1})
+	contextMemory.Add(&Entry{value: "D", tokens: 1})
+	contextMemory.Add(&Entry{value: "E", tokens: 1})
 
 	result := contextMemory.All()
 	expected := "D\nE\nC\n"

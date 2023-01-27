@@ -1,8 +1,13 @@
 package cmd
 
+type Entry struct {
+	value  string
+	tokens int
+}
+
 //todo repo to save state
 type ContextMemory struct {
-	buffer []string
+	buffer []*Entry
 	size   int
 	tail   int
 }
@@ -10,11 +15,11 @@ type ContextMemory struct {
 func NewContextMemory(size int) *ContextMemory {
 	return &ContextMemory{
 		size:   size,
-		buffer: make([]string, size),
+		buffer: make([]*Entry, size),
 	}
 }
 
-func (c *ContextMemory) Add(value string) {
+func (c *ContextMemory) Add(value *Entry) {
 	c.buffer[c.tail] = value
 	c.tail = (c.tail + 1) % c.size
 }
@@ -22,8 +27,8 @@ func (c *ContextMemory) Add(value string) {
 func (c *ContextMemory) All() string {
 	all := ""
 	for n := 0; n < c.size; n++ {
-		if c.buffer[n] != "" {
-			all += c.buffer[n]
+		if c.buffer[n] != nil {
+			all += c.buffer[n].value
 			all += "\n"
 		}
 	}
@@ -31,5 +36,5 @@ func (c *ContextMemory) All() string {
 }
 
 func (c *ContextMemory) Reset() {
-	c.buffer = make([]string, c.size)
+	c.buffer = make([]*Entry, c.size)
 }
