@@ -1,39 +1,39 @@
 package cmd
 
 type Entry struct {
-	value  string
-	tokens int
+	Value  string `json:"value"`
+	Tokens int    `json:"tokens"`
 }
 
 //todo repo to save state
 type ContextMemory struct {
-	buffer    []*Entry
-	maxTokens int
-	id        string
+	Buffer    []*Entry `json:"buffer"`
+	MaxTokens int      `json:"max_tokens"`
+	ID        string   `json:"id"`
 }
 
 func NewContextMemory(id string, maxTokens int) *ContextMemory {
 	return &ContextMemory{
-		buffer:    []*Entry{},
-		maxTokens: maxTokens,
-		id:        id,
+		Buffer:    []*Entry{},
+		MaxTokens: maxTokens,
+		ID:        id,
 	}
 }
 
 func (c *ContextMemory) Add(value *Entry) {
-	c.buffer = append(c.buffer, value)
+	c.Buffer = append(c.Buffer, value)
 
 	i := 0
-	for c.TokenCount() > c.maxTokens {
-		c.buffer = append(c.buffer[:i], c.buffer[i+1:]...)
+	for c.TokenCount() > c.MaxTokens {
+		c.Buffer = append(c.Buffer[:i], c.Buffer[i+1:]...)
 	}
 }
 
 func (c *ContextMemory) All() string {
 	all := ""
-	for _, v := range c.buffer {
+	for _, v := range c.Buffer {
 		if v != nil {
-			all += v.value
+			all += v.Value
 			all += "\n"
 		}
 	}
@@ -41,14 +41,14 @@ func (c *ContextMemory) All() string {
 }
 
 func (c *ContextMemory) Reset() {
-	c.buffer = []*Entry{}
+	c.Buffer = []*Entry{}
 }
 
 func (c *ContextMemory) TokenCount() int {
 	count := 0
-	for _, k := range c.buffer {
+	for _, k := range c.Buffer {
 		if k != nil {
-			count += k.tokens
+			count += k.Tokens
 		}
 	}
 	return count

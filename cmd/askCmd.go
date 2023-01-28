@@ -91,7 +91,7 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", errors.New("no question asked")
 	}
 
-	provider := NewProvider(10, false, contextMemoryID)
+	provider := NewProvider(1000, true, contextMemoryID)
 
 	result, err := provider.Prompt(query, model, temperature, maxTokens)
 

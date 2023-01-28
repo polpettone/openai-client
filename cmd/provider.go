@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/polpettone/labor/openai-client/cmd/config"
@@ -19,6 +21,20 @@ func NewProvider(maxTokens int, contextEnabled bool, contextMemoryID string) *Pr
 		contextEnabled: contextEnabled,
 	}
 
+}
+
+func saveContextMemory(context *ContextMemory) error {
+	data, err := json.Marshal(context)
+	if err != nil {
+		return err
+	}
+
+	err = os.WriteFile(context.ID, data, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (p *Provider) ClearContext() {
@@ -56,7 +72,7 @@ func (p *Provider) Prompt(
 	completionTokens := response.Usage.CompletionTokens
 
 	if p.contextEnabled {
-		entry := &Entry{value: text, tokens: promptTokens}
+		entry := &Entry{Value: text, Tokens: promptTokens}
 		p.contextMemory.Add(entry)
 	}
 
@@ -64,16 +80,24 @@ func (p *Provider) Prompt(
 	for _, v := range response.Choices {
 		result = fmt.Sprintf("%s\n", v.Text)
 		if p.contextEnabled {
-			entry := &Entry{value: result, tokens: completionTokens}
+			entry := &Entry{Value: result, Tokens: completionTokens}
 			p.contextMemory.Add(entry)
 		}
+	}
+
+	if p.contextEnabled {
+		err = saveContextMemory(p.contextMemory)
+	}
+
+	if err != nil {
+		return "", err
 	}
 
 	config.ContextMemoryLogger.
 		Info().
 		Str("memory", p.contextMemory.All()).
 		Int("token_count", p.contextMemory.TokenCount()).
-		Int("max_tokens", p.contextMemory.maxTokens).
+		Int("max_tokens", p.contextMemory.MaxTokens).
 		Send()
 
 	return result, nil

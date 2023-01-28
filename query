@@ -1,25 +1,13 @@
-baue mir ein golang struct aus diesem json
-
-{
-  "data": [
-    {
-      "id": "model-id-0",
-      "object": "model",
-      "owned_by": "organization-owner",
-      "permission": [...]
-    },
-    {
-      "id": "model-id-1",
-      "object": "model",
-      "owned_by": "organization-owner",
-      "permission": [...]
-    },
-    {
-      "id": "model-id-2",
-      "object": "model",
-      "owned_by": "openai",
-      "permission": [...]
-    },
-  ],
-  "object": "list"
+type Entry struct {
+	value  string
+	tokens int
 }
+
+type ContextMemory struct {
+	buffer    []*Entry
+	maxTokens int
+	id        string
+}
+
+Baue eine golang funktion um ContextMemory in eine file als json to speichern.
+Das Speicher in die File soll die File erweitern und nicht truncaten.
