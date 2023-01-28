@@ -145,7 +145,7 @@ func init() {
 	askCmd.Flags().IntP(
 		"maxTokens",
 		"t",
-		256,
+		3000,
 		"")
 
 	askCmd.Flags().StringP(
