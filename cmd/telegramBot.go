@@ -21,7 +21,7 @@ func StartBot() error {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	provider := NewProvider(2000, true)
+	provider := NewProvider(3000, true)
 
 	for update := range updates {
 		if update.Message == nil {
@@ -44,7 +44,7 @@ func StartBot() error {
 				response = "context cleared"
 			} else {
 				prompt = strings.Replace(msg.Text, triggerWord, "", -1)
-				response, err = provider.Prompt(prompt, "text-davinci-003", 0.7, 256)
+				response, err = provider.Prompt(prompt, "text-davinci-003", 0.7, 3000)
 				if err != nil {
 					return err
 				}
