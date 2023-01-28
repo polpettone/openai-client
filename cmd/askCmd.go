@@ -55,6 +55,11 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", err
 	}
 
+	contextMemoryID, err := cobraCommand.Flags().GetString("contextMemoryID")
+	if err != nil {
+		return "", err
+	}
+
 	var queryContentFromFile string
 
 	if openEditor {
@@ -86,7 +91,7 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 		return "", errors.New("no question asked")
 	}
 
-	provider := NewProvider(10, false)
+	provider := NewProvider(10, false, contextMemoryID)
 
 	result, err := provider.Prompt(query, model, temperature, maxTokens)
 
@@ -143,6 +148,11 @@ func init() {
 		256,
 		"")
 
+	askCmd.Flags().StringP(
+		"contextMemoryID",
+		"c",
+		"context-1",
+		"id of context memory")
 }
 
 func readFromFile(path string) (string, error) {

@@ -21,7 +21,7 @@ func BotCmd() *cobra.Command {
 }
 
 func handleBotCommand(cobraCommand *cobra.Command, args []string) (string, error) {
-	err := StartBot()
+	err := StartBot("telegramBotContext")
 	if err != nil {
 		return "", err
 	}

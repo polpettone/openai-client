@@ -12,10 +12,10 @@ type Provider struct {
 	contextEnabled bool
 }
 
-func NewProvider(maxTokens int, contextEnabled bool) *Provider {
+func NewProvider(maxTokens int, contextEnabled bool, contextMemoryID string) *Provider {
 
 	return &Provider{
-		contextMemory:  NewContextMemory(maxTokens),
+		contextMemory:  NewContextMemory(contextMemoryID, maxTokens),
 		contextEnabled: contextEnabled,
 	}
 

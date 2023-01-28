@@ -9,12 +9,14 @@ type Entry struct {
 type ContextMemory struct {
 	buffer    []*Entry
 	maxTokens int
+	id        string
 }
 
-func NewContextMemory(maxTokens int) *ContextMemory {
+func NewContextMemory(id string, maxTokens int) *ContextMemory {
 	return &ContextMemory{
 		buffer:    []*Entry{},
 		maxTokens: maxTokens,
+		id:        id,
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func StartBot() error {
+func StartBot(contextMemoryID string) error {
 	bot, err := tgbotapi.NewBotAPI(os.Getenv("CLEVER_MAN_TELEGRAM_BOT"))
 
 	if err != nil {
@@ -21,7 +21,7 @@ func StartBot() error {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	provider := NewProvider(3000, true)
+	provider := NewProvider(3000, true, contextMemoryID)
 
 	for update := range updates {
 		if update.Message == nil {
