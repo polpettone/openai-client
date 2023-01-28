@@ -53,8 +53,13 @@ func loadContextMemory(contextID string) (*ContextMemory, error) {
 	return contextMemory, nil
 }
 
-func (p *Provider) ClearContext() {
+func (p *Provider) ClearContext() error {
 	p.contextMemory.Reset()
+	err := saveContextMemory(p.contextMemory)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (p *Provider) Prompt(

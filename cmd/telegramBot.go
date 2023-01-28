@@ -40,7 +40,10 @@ func StartBot(contextMemoryID string) error {
 		if strings.Contains(msg.Text, triggerWord) {
 
 			if strings.Contains(msg.Text, triggerClearContext) {
-				provider.ClearContext()
+				err := provider.ClearContext()
+				if err != nil {
+					return err
+				}
 				response = "context cleared"
 			} else {
 				prompt = strings.Replace(msg.Text, triggerWord, "", -1)
