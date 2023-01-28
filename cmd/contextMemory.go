@@ -5,7 +5,6 @@ type Entry struct {
 	Tokens int    `json:"tokens"`
 }
 
-//todo repo to save state
 type ContextMemory struct {
 	Buffer    []*Entry `json:"buffer"`
 	MaxTokens int      `json:"max_tokens"`

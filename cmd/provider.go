@@ -37,6 +37,22 @@ func saveContextMemory(context *ContextMemory) error {
 	return nil
 }
 
+func loadContextMemory(contextID string) (*ContextMemory, error) {
+
+	content, err := os.ReadFile(contextID)
+	if err != nil {
+		return nil, err
+	}
+
+	contextMemory := &ContextMemory{}
+	err = json.Unmarshal(content, contextMemory)
+	if err != nil {
+		return nil, err
+	}
+
+	return contextMemory, nil
+}
+
 func (p *Provider) ClearContext() {
 	p.contextMemory.Reset()
 }
@@ -55,7 +71,19 @@ func (p *Provider) Prompt(
 	prompt := text
 
 	if p.contextEnabled {
-		prompt = fmt.Sprintf("%s \n %s", p.contextMemory.All(), text)
+		if _, err := os.Stat(p.contextMemory.ID); err == nil {
+			p.contextMemory, err = loadContextMemory(p.contextMemory.ID)
+			if err != nil {
+				return "", err
+			}
+			prompt = fmt.Sprintf("%s \n %s", p.contextMemory.All(), text)
+		} else {
+			config.FileLogger.
+				Info().
+				Str("msg",
+					fmt.Sprintf("no context memory found with id: %s",
+						p.contextMemory.ID))
+		}
 	}
 
 	response, err := client.Complete(

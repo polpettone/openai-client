@@ -2,4 +2,5 @@ history
 .idea/
 openai-history-log.json
 context-memory.json
+openai-log.json
 *.log
