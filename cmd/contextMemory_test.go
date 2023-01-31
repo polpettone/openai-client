@@ -6,11 +6,11 @@ import (
 
 func TestAdd(t *testing.T) {
 
-	contextMemory := NewContextMemory(3)
+	contextMemory := NewContextMemory("id", 3)
 
-	contextMemory.Add(&Entry{value: "A", tokens: 1})
-	contextMemory.Add(&Entry{value: "B", tokens: 1})
-	contextMemory.Add(&Entry{value: "C", tokens: 1})
+	contextMemory.Add(&Entry{Value: "A", Tokens: 1})
+	contextMemory.Add(&Entry{Value: "B", Tokens: 1})
+	contextMemory.Add(&Entry{Value: "C", Tokens: 1})
 
 	result := contextMemory.All()
 	expected := "A\nB\nC\n"
@@ -21,12 +21,12 @@ func TestAdd(t *testing.T) {
 
 func TestMaxTokens(t *testing.T) {
 
-	contextMemory := NewContextMemory(3)
+	contextMemory := NewContextMemory("id", 3)
 
-	contextMemory.Add(&Entry{value: "A", tokens: 1})
-	contextMemory.Add(&Entry{value: "B", tokens: 1})
-	contextMemory.Add(&Entry{value: "C", tokens: 1})
-	contextMemory.Add(&Entry{value: "D", tokens: 3})
+	contextMemory.Add(&Entry{Value: "A", Tokens: 1})
+	contextMemory.Add(&Entry{Value: "B", Tokens: 1})
+	contextMemory.Add(&Entry{Value: "C", Tokens: 1})
+	contextMemory.Add(&Entry{Value: "D", Tokens: 3})
 
 	result := contextMemory.All()
 	expected := "D\n"
@@ -37,7 +37,7 @@ func TestMaxTokens(t *testing.T) {
 
 func TestClear(t *testing.T) {
 
-	contextMemory := NewContextMemory(10)
+	contextMemory := NewContextMemory("id", 10)
 	contextMemory.Reset()
 	result := contextMemory.All()
 	expected := ""
@@ -48,11 +48,11 @@ func TestClear(t *testing.T) {
 }
 
 func TestTokenCount(t *testing.T) {
-	contextMemory := NewContextMemory(10)
+	contextMemory := NewContextMemory("id", 10)
 
-	contextMemory.Add(&Entry{value: "A", tokens: 1})
-	contextMemory.Add(&Entry{value: "B", tokens: 2})
-	contextMemory.Add(&Entry{value: "C", tokens: 3})
+	contextMemory.Add(&Entry{Value: "A", Tokens: 1})
+	contextMemory.Add(&Entry{Value: "B", Tokens: 2})
+	contextMemory.Add(&Entry{Value: "C", Tokens: 3})
 
 	result := contextMemory.TokenCount()
 

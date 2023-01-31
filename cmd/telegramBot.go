@@ -55,6 +55,9 @@ func StartBot(contextMemoryID string) error {
 		}
 
 		msg.ReplyToMessageID = update.Message.MessageID
+		if response == "" {
+			response = "no response"
+		}
 		msg.Text = response
 
 		if _, err := bot.Send(msg); err != nil {
