@@ -10,8 +10,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/polpettone/labor/openai-client/cmd/config"
-	"github.com/polpettone/labor/openai-client/pkg"
+	"github.com/polpettone/openai-client/cmd/config"
+	"github.com/polpettone/openai-client/pkg"
 )
 
 type OpenAIClient struct {

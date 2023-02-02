@@ -1,4 +1,4 @@
-module github.com/polpettone/labor/openai-client
+module github.com/polpettone/openai-client
 
 go 1.19
 

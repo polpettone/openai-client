@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/polpettone/labor/openai-client/cmd/config"
+	"github.com/polpettone/openai-client/cmd/config"
 )
 
 type Provider struct {

@@ -30,6 +30,13 @@ func StartBot(contextMemoryID string) error {
 
 		fmt.Printf("MessageFrom: %s\n", update.Message.From)
 
+		if update.Message.SenderChat != nil {
+			fmt.Printf("SenderChatID: %d\n", update.Message.SenderChat.ID)
+			fmt.Printf("SenderChat Description: %s\n", update.Message.SenderChat.Description)
+		} else {
+			fmt.Printf("No SenderChat Data")
+		}
+
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
 		triggerClearContext := "clearContext"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/polpettone/labor/openai-client/pkg"
+	"github.com/polpettone/openai-client/pkg"
 	"github.com/spf13/cobra"
 )
 
