@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/polpettone/openai-client/cmd/config"
+	"github.com/polpettone/openai-client/cmd/logging"
 )
 
 type Provider struct {
@@ -83,7 +83,7 @@ func (p *Provider) Prompt(
 			}
 			prompt = fmt.Sprintf("%s \n %s", p.contextMemory.All(), text)
 		} else {
-			config.FileLogger.
+			logging.FileLogger.
 				Info().
 				Str("msg",
 					fmt.Sprintf("no context memory found with id: %s",
@@ -126,7 +126,7 @@ func (p *Provider) Prompt(
 		return "", err
 	}
 
-	config.ContextMemoryLogger.
+	logging.ContextMemoryLogger.
 		Info().
 		Str("memory", p.contextMemory.All()).
 		Int("token_count", p.contextMemory.TokenCount()).

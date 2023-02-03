@@ -10,7 +10,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/polpettone/openai-client/cmd/config"
+	"github.com/polpettone/openai-client/cmd/logging"
 	"github.com/polpettone/openai-client/pkg"
 )
 
@@ -36,7 +36,7 @@ func (o *OpenAIClient) Complete(
 	temperature float64,
 	maxTokens int) (*TextCompletion, error) {
 
-	config.Logger.Debug().Msgf("Using model: %s \n", model)
+	logging.Logger.Debug().Msgf("Using model: %s \n", model)
 
 	payload := Payload{
 		Model:            model,
@@ -90,7 +90,7 @@ func (o *OpenAIClient) Complete(
 	var textCompletion TextCompletion
 	err = json.Unmarshal(responseBody, &textCompletion)
 
-	config.HistoryLogger.
+	logging.HistoryLogger.
 		Info().
 		Str("url", COMPLETION_URL).
 		Int64("response_time_ms", requestDuration.Milliseconds()).

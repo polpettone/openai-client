@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"github.com/polpettone/openai-client/cmd/config"
+	"github.com/polpettone/openai-client/cmd/logging"
 )
 
 func StartBot(telegramBotToken, contextMemoryID string) error {
@@ -26,7 +26,7 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 			continue
 		}
 
-		config.Logger.
+		logging.Logger.
 			Info().
 			Str("MessageFrom", update.Message.From.String()).
 			Send()
@@ -86,7 +86,7 @@ func logMessage(msg *tgbotapi.Message) error {
 	if err != nil {
 		return err
 	}
-	config.Logger.
+	logging.Logger.
 		Info().
 		RawJSON("Message", messageJson).
 		Send()

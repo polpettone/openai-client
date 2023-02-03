@@ -31,7 +31,7 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-// initConfig reads in config file and ENV variables if set.
+// initConfig reads in logging file and ENV variables if set.
 func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
 	viper.ReadInConfig()
