@@ -15,9 +15,9 @@ var ContextMemoryLogger zerolog.Logger
 var FileLogger zerolog.Logger
 
 func init() {
-	contextMemoryLogFile := openLogFile("context-memory.json")
-	historyLogFile := openLogFile("openai-history-log.json")
-	logFile := openLogFile("openai-log.json")
+	contextMemoryLogFile := openLogFile("/tmp/context-memory.json")
+	historyLogFile := openLogFile("/tmp/openai-history-log.json")
+	logFile := openLogFile("/tmp/openai-log.json")
 	HistoryLogger = zerolog.New(historyLogFile).With().Timestamp().Logger()
 	ContextMemoryLogger = zerolog.New(contextMemoryLogFile).With().Timestamp().Logger()
 	Logger = zerolog.New(os.Stdout).With().Timestamp().Logger()

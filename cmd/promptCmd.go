@@ -9,12 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func AskCmd() *cobra.Command {
+func PromptCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "ask",
+		Use:   "prompt",
 		Short: "",
 		Run: func(cmd *cobra.Command, args []string) {
-			stdout, err := handleAskCommand(cmd, args)
+			stdout, err := handlePromptCommand(cmd, args)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -23,7 +23,7 @@ func AskCmd() *cobra.Command {
 	}
 }
 
-func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error) {
+func handlePromptCommand(cobraCommand *cobra.Command, args []string) (string, error) {
 
 	openEditor, err := cobraCommand.Flags().GetBool("queryFromEditor")
 	if err != nil {
@@ -88,7 +88,7 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 	query := fmt.Sprintf("%s \n %s", contentFromArg, queryContentFromFile)
 
 	if query == "" {
-		return "", errors.New("no question asked")
+		return "", errors.New("no prompt given")
 	}
 
 	provider := NewProvider(1000, true, contextMemoryID)
@@ -110,45 +110,45 @@ func handleAskCommand(cobraCommand *cobra.Command, args []string) (string, error
 }
 
 func init() {
-	askCmd := AskCmd()
-	rootCmd.AddCommand(askCmd)
+	promptCmd := PromptCmd()
+	rootCmd.AddCommand(promptCmd)
 
-	askCmd.Flags().BoolP(
+	promptCmd.Flags().BoolP(
 		"queryFromEditor",
 		"q",
 		false,
 		"opens a temp file in an editor to write a query")
 
-	askCmd.Flags().StringP(
+	promptCmd.Flags().StringP(
 		"file",
 		"f",
 		"",
 		"query from file, get appended to question from argument")
 
-	askCmd.Flags().StringP(
+	promptCmd.Flags().StringP(
 		"model",
 		"m",
 		"text-davinci-003",
 		"model")
 
-	askCmd.Flags().Float64(
+	promptCmd.Flags().Float64(
 		"temperature",
 		0.7,
 		"https://beta.openai.com/docs/api-reference/completions/create#completions/create-temperature")
 
-	askCmd.Flags().StringP(
+	promptCmd.Flags().StringP(
 		"outputFile",
 		"o",
 		"",
 		"write response also to a given file")
 
-	askCmd.Flags().IntP(
+	promptCmd.Flags().IntP(
 		"maxTokens",
 		"t",
 		3000,
 		"")
 
-	askCmd.Flags().StringP(
+	promptCmd.Flags().StringP(
 		"contextMemoryID",
 		"c",
 		"context-1",
