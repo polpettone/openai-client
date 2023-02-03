@@ -2,14 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-func StartBot(contextMemoryID string) error {
-	bot, err := tgbotapi.NewBotAPI(os.Getenv("CLEVER_MAN_TELEGRAM_BOT"))
+func StartBot(telegramBotToken, contextMemoryID string) error {
+	bot, err := tgbotapi.NewBotAPI(telegramBotToken)
 
 	if err != nil {
 		return err
@@ -29,13 +28,6 @@ func StartBot(contextMemoryID string) error {
 		}
 
 		fmt.Printf("MessageFrom: %s\n", update.Message.From)
-
-		if update.Message.SenderChat != nil {
-			fmt.Printf("SenderChatID: %d\n", update.Message.SenderChat.ID)
-			fmt.Printf("SenderChat Description: %s\n", update.Message.SenderChat.Description)
-		} else {
-			fmt.Printf("No SenderChat Data")
-		}
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
