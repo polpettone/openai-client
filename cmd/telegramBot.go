@@ -31,16 +31,10 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 			Str("MessageFrom", update.Message.From.String()).
 			Send()
 
-		messageJson, err := json.Marshal(update.Message)
-
+		err := logMessage(update.Message)
 		if err != nil {
 			return err
 		}
-
-		config.Logger.
-			Info().
-			RawJSON("Message", messageJson).
-			Send()
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
@@ -72,10 +66,29 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 		}
 		msg.Text = response
 
-		if _, err := bot.Send(msg); err != nil {
+		message, err := bot.Send(msg)
+
+		if err != nil {
+			return err
+		}
+
+		err = logMessage(&message)
+		if err != nil {
 			return err
 		}
 
 	}
+	return nil
+}
+
+func logMessage(msg *tgbotapi.Message) error {
+	messageJson, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	config.Logger.
+		Info().
+		RawJSON("Message", messageJson).
+		Send()
 	return nil
 }
