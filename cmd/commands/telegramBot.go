@@ -1,7 +1,8 @@
-package cmd
+package commands
 
 import (
 	"encoding/json"
+	provider2 "github.com/polpettone/openai-client/cmd/provider"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
@@ -19,7 +20,7 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 	updateConfig.Timeout = 30
 	updates := bot.GetUpdatesChan(updateConfig)
 
-	provider := NewProvider(3000, true, contextMemoryID)
+	provider := provider2.NewProvider(3000, true, contextMemoryID)
 
 	for update := range updates {
 		if update.Message == nil {

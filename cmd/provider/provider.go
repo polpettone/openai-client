@@ -1,8 +1,9 @@
-package cmd
+package provider
 
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/polpettone/openai-client/cmd/client"
 	"os"
 	"time"
 
@@ -67,7 +68,7 @@ func (p *Provider) Prompt(
 	model string,
 	temperature float64,
 	maxTokens int) (string, error) {
-	client, err := NewOpenAIClient()
+	client, err := client.NewOpenAIClient()
 
 	if err != nil {
 		return "", nil
@@ -138,7 +139,7 @@ func (p *Provider) Prompt(
 }
 
 func ImageGenerator(query string, imageName string) (string, error) {
-	client, err := NewOpenAIClient()
+	client, err := client.NewOpenAIClient()
 	if err != nil {
 		return "", err
 	}
@@ -152,9 +153,9 @@ func ImageGenerator(query string, imageName string) (string, error) {
 	return imageName, nil
 }
 
-func ListModels() ([]Model, error) {
+func ListModels() ([]client.Model, error) {
 
-	client, err := NewOpenAIClient()
+	client, err := client.NewOpenAIClient()
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +166,7 @@ func ListModels() ([]Model, error) {
 	return models, nil
 }
 
-func generateName(value string) string {
+func GenerateName(value string) string {
 	time.Sleep(10 * time.Millisecond)
 	milliseconds := time.Now().UnixNano() / int64(time.Millisecond)
 

@@ -1,8 +1,9 @@
-package cmd
+package commands
 
 import (
 	"errors"
 	"fmt"
+	provider2 "github.com/polpettone/openai-client/cmd/provider"
 	"io/ioutil"
 
 	"github.com/polpettone/openai-client/pkg"
@@ -91,7 +92,7 @@ func handlePromptCommand(cobraCommand *cobra.Command, args []string) (string, er
 		return "", errors.New("no prompt given")
 	}
 
-	provider := NewProvider(1000, true, contextMemoryID)
+	provider := provider2.NewProvider(1000, true, contextMemoryID)
 
 	result, err := provider.Prompt(query, model, temperature, maxTokens)
 

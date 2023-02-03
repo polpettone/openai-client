@@ -1,7 +1,9 @@
 package main
 
-import "github.com/polpettone/openai-client/cmd"
+import (
+	"github.com/polpettone/openai-client/cmd/commands"
+)
 
 func main() {
-	cmd.Execute()
+	commands.Execute()
 }

@@ -1,8 +1,9 @@
-package cmd
+package commands
 
 import (
 	"errors"
 	"fmt"
+	"github.com/polpettone/openai-client/cmd/provider"
 	"strings"
 	"sync"
 
@@ -58,12 +59,12 @@ func handleImageCommand(cobraCommand *cobra.Command, args []string) (string, err
 
 	for n := 0; n < countOfCreations; n++ {
 
-		imageName := generateName(strings.Split(query, " ")[0])
+		imageName := provider.GenerateName(strings.Split(query, " ")[0])
 
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			ImageGenerator(query, imageName)
+			provider.ImageGenerator(query, imageName)
 		}()
 	}
 	wg.Wait()

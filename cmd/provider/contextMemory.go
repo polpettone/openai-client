@@ -1,4 +1,4 @@
-package cmd
+package provider
 
 type Entry struct {
 	Value  string `json:"value"`

@@ -1,7 +1,8 @@
-package cmd
+package commands
 
 import (
 	"fmt"
+	"github.com/polpettone/openai-client/cmd/provider"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,7 @@ func ModelsCmd() *cobra.Command {
 
 func handleModelsCommand(cobraCommand *cobra.Command, args []string) (string, error) {
 
-	models, err := ListModels()
+	models, err := provider.ListModels()
 
 	if err != nil {
 		return "", err
