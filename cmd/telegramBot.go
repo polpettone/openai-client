@@ -1,10 +1,11 @@
 package cmd
 
 import (
-	"fmt"
+	"encoding/json"
 	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/polpettone/openai-client/cmd/config"
 )
 
 func StartBot(telegramBotToken, contextMemoryID string) error {
@@ -13,8 +14,6 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 	if err != nil {
 		return err
 	}
-
-	bot.Debug = true
 
 	updateConfig := tgbotapi.NewUpdate(0)
 	updateConfig.Timeout = 30
@@ -27,7 +26,21 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 			continue
 		}
 
-		fmt.Printf("MessageFrom: %s\n", update.Message.From)
+		config.Logger.
+			Info().
+			Str("MessageFrom", update.Message.From.String()).
+			Send()
+
+		messageJson, err := json.Marshal(update.Message)
+
+		if err != nil {
+			return err
+		}
+
+		config.Logger.
+			Info().
+			RawJSON("Message", messageJson).
+			Send()
 
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 
