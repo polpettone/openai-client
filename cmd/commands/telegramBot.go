@@ -2,8 +2,9 @@ package commands
 
 import (
 	"encoding/json"
-	provider2 "github.com/polpettone/openai-client/cmd/provider"
 	"strings"
+
+	provider2 "github.com/polpettone/openai-client/cmd/provider"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/polpettone/openai-client/cmd/logging"
@@ -43,6 +44,11 @@ func StartBot(telegramBotToken, contextMemoryID string) error {
 		triggerWord := "openAI"
 		prompt := ""
 		response := "no prompt to openai"
+		shutdownTrigger := "machAusDitDing"
+
+		if strings.Contains(msg.Text, shutdownTrigger) {
+			return nil
+		}
 
 		if strings.Contains(msg.Text, triggerWord) {
 
