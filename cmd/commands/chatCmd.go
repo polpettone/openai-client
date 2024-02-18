@@ -37,11 +37,12 @@ func handleChatCommand(cobraCommand *cobra.Command, args []string) (string, erro
 		return "", err
 	}
 
+	var output string
 	for _, n := range response.Choices {
-		fmt.Printf("%s\n", n.Message.Content)
+		output += fmt.Sprintf("%s\n", n.Message.Content)
 	}
 
-	return fmt.Sprintf("%v", response), nil
+	return output, nil
 }
 
 func init() {

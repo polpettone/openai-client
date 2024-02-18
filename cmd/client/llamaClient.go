@@ -92,8 +92,6 @@ func (o *LlamaClient) Complete(question string) (*LlamaResponse, error) {
 		return nil, errors.New(string(responseBody))
 	}
 
-	logging.Logger.Info().Str("0", string(responseBody)).Send()
-
 	var llamaResponse LlamaResponse
 	err = json.Unmarshal(responseBody, &llamaResponse)
 
